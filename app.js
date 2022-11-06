@@ -17,6 +17,9 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp')
         console.log('Mongoose connect ot MongoDB : ERROR');
         console.log(e)
     })
+//import ejs-mate
+const ejsMate = require('ejs-mate');
+app.engine('ejs', ejsMate)
 //set ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -56,7 +59,7 @@ app.get('/campgrounds/:id', async (req, res) => {
 app.get('/campgrounds/:id/edit', async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
-    res.render('campgrounds/edit.ejs', { c: campground })
+    res.render('campgrounds/edit.ejs', { campground })
 })
 //patch edit
 app.patch('/campgrounds/:id', async (req, res) => {
