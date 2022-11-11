@@ -31,7 +31,7 @@ const seedDB = async () => {
                 price,
                 //above line = price : price
             })
-            await c.save();
+        await c.save();
         }
     }
     catch (e) {

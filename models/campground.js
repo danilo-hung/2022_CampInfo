@@ -11,7 +11,8 @@ const campgroundSchema = new Schema({
     },
     price: {
         type: Number,
-        require: false
+        require: false,
+        min: 0
     },
     description: {
         type: String,
