@@ -17,7 +17,7 @@ const pickRand = (subject) => { return subject[Math.floor(Math.random() * subjec
 const seedDB = async () => {
     try {
         await Campground.deleteMany({});
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
             const randomC = Math.floor(Math.random() * cities.length);
             //set random price between 30.00~39.99
             const price = Math.round((Math.random() * 30 + 10) * 100) / 100;

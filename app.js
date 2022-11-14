@@ -9,11 +9,13 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 //import comgroundSchema
 const Campground = require("./models/campground");
+//import Review Model
+const Review = require("./models/review");
 //import ExpressError
 const ExpressError = require("./utils/ExpressError");
 //import catchAsync
 const catchAsync = require("./utils/catchAsync");
-const { campgroundSchema } = require("./schemas.js")
+const { campgroundSchema, reviewSchema } = require("./schemas.js")
 //connect Mongoose
 mongoose.connect('mongodb://localhost:27017/yelp-camp')
     .then(() => {
@@ -47,6 +49,15 @@ const validateCampground = (req, res, next) => {
         next()
     }
 }
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(msg, 400);
+    } else {
+        next()
+    }
+}
 //HomePage
 app.get('/', (req, res) => {
     res.render('home.ejs')
@@ -67,11 +78,11 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`)
 }))
-//get detail
+//show page get detail
 app.get('/campgrounds/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const campground = await Campground.findById(id);
+        const campground = await Campground.findById(id).populate("reviews");
         res.render('campgrounds/show.ejs', { campground })
     }
     catch (e) {
@@ -79,23 +90,42 @@ app.get('/campgrounds/:id', async (req, res, next) => {
     }
 });
 //get edit
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render('campgrounds/edit.ejs', { campground })
 }));
 //patch edit
-app.patch('/campgrounds/:id', validateCampground, catchAsync(async (req, res, next) => {
+app.patch('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndUpdate(id, req.body.campground, { runValidators: true, new: true })
     res.redirect(`/campgrounds/${id}`)
 }));
 //Delete
-app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds')
 }));
+//create review linked with campground model
+app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res) => {
+    // res.send("SUBMIT REVIEW TEST")
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+}))
+//delete review
+app.delete("/campgrounds/:id/reviews/:reviewId", catchAsync(async (req, res,) => {
+    const { id, reviewId } = req.params;
+    //$pull: delete
+    // {reviews: reviewId} in specific document, pick campground's reviews matched reviewId
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`)
+}))
 
 //ERRORS HANDLING
 //404 not found
