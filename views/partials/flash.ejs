@@ -1,0 +1,25 @@
+<% if (success && success.length) { %>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Successfully </strong>
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+ <% } else if (deleted && deleted.length){ %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= deleted %>
+        <strong>
+            deleted
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } else if (error && error.length) {%> 
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>
+            ERROR!!
+        </strong>
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %> 
+
+
