@@ -39,7 +39,7 @@ router.delete("/:reviewId", catchAsync(async (req, res,) => {
     // {reviews: reviewId} in specific document, pick campground's reviews matched reviewId
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
-    req.flash("deleted", "The review has been");
+    req.flash("alert", "The review has been deleted");
     res.redirect(`/campgrounds/${id}`)
 }))
 

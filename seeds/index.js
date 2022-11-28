@@ -22,7 +22,7 @@ const seedDB = async () => {
             //set random price between 30.00~39.99
             const price = Math.round((Math.random() * 30 + 10) * 100) / 100;
             //get random photo from a collection on unsplash web
-            const imgUrl= 'http://source.unsplash.com/collection/162213';
+            const imgUrl= 'https://images.unsplash.com/photo-1573347885404-729f489816ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80';
             const c = new Campground({
                 title: `${pickRand(descriptors)} ${pickRand(places)}`,
                 location: `${cities[randomC].city}, ${cities[randomC].state}`,

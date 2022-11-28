@@ -13,10 +13,16 @@ const ExpressError = require("./utils/ExpressError");
 const campgroundsRouter = require("./routes/campgrounds");
 //import reviews router
 const reviewsRouter = require("./routes/reviews");
+const userRouter = require("./routes/users")
 //import session
 const session = require("express-session");
 //import flash for flash msg
 const flash = require("connect-flash");
+//import passport package for authentication
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user")
+
 //connect Mongoose
 mongoose.connect('mongodb://localhost:27017/yelp-camp')
     .then(() => {
@@ -52,20 +58,35 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 //use flash
-app.use(flash())
+app.use(flash());
 
-//set flash msg middleware
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
+    console.log(req.session)
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
-    res.locals.deleted = req.flash("deleted");
+    res.locals.alert = req.flash("alert");
     res.locals.error = req.flash("error");
     next();
+})
+
+app.get("/fakeUser", async (req, res) => {
+    const user = new User({email: "test1@gmail.com", username:"test1"});
+    const newUser = await User.register(user, "test1123");
+    res.send(newUser);
 })
 
 //use campgrounds Route
 app.use("/campgrounds", campgroundsRouter);
 //use reviews Route
 app.use("/campgrounds/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
 //HomePage
 app.get('/', (req, res) => {
     res.render('home.ejs')

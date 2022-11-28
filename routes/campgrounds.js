@@ -7,6 +7,7 @@ const catchAsync = require("../utils/catchAsync");
 //import ExpressError
 const ExpressError = require("../utils/ExpressError");
 const { campgroundSchema } = require("../schemas.js");
+const { isLoggedIn } = require("../middleware");
 //make a Joi campgroundSchema-and-catch-error middleware
 const validateCampground = (req, res, next) => {
     //destructure error from campgroundSchema(req.body)
@@ -26,11 +27,11 @@ router.get('/', catchAsync(async (req, res, next) => {
     res.render('campgrounds/index.ejs', { campgrounds });
 }));
 //get create new page
-router.get('/new', (req, res) => {
+router.get('/new',isLoggedIn , (req, res) => {
     res.render('campgrounds/new');
 })
 //post new to DB
-router.post('/', validateCampground, catchAsync(async (req, res, next) => {
+router.post('/',isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
     // if (!req.body.campground) throw new ExpressError("Invalid Campgrounod Data", 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
@@ -42,7 +43,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
         const campground = await Campground.findById(id).populate("reviews");
-        if(!campground){
+        if (!campground) {
             req.flash("error", "Cannot find the campground");
             return res.redirect("/campgrounds")
         }
@@ -56,7 +57,7 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
-    if(!campground){
+    if (!campground) {
         req.flash("error", "Cannot find the campground");
         return res.redirect("/campgrounds")
     }
@@ -73,7 +74,7 @@ router.patch('/:id', validateCampground, catchAsync(async (req, res) => {
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
-    req.flash("deleted", "The campground has been");
+    req.flash("alert", "The campground has been deleted");
     res.redirect('/campgrounds')
 }));
 

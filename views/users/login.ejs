@@ -1,0 +1,26 @@
+<% layout('./layout/boilerplate.ejs') %>
+    <h1>Login</h1>
+    <form action="/login" method="POST" class="validated-form" novalidate>
+        <div class="mb-3">
+            <label class="form-label" for="username">Username :</label>
+            <input class="form-control" type="text" name="username" id="username" required>
+            <div class="valid-feedback">
+                <span>ok! ( 有效 ) </span>
+            </div>
+            <div class="invalid-feedback">
+                <span>Please provide your User Name.<br>請輸入使用者名稱</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="password">Password :</label>
+            <input class="form-control" type="password" name="password" id="password" required>
+            <div class="valid-feedback">
+                <span>ok! ( 有效 ) </span>
+            </div>
+            <div class="invalid-feedback">
+                <span>Please provide your Password.<br>請輸入密碼</span>
+            </div>
+        </div>
+        <button class="btn btn-info">Login</button>
+    </form>

@@ -1,0 +1,37 @@
+<% layout('./layout/boilerplate.ejs') %>
+    <h1>Register</h1>
+    <form action="/register" method="POST" class="validated-form" novalidate>
+        <div class="mb-3">
+            <label class="form-label" for="username">Username :</label>
+            <input class="form-control" type="text" name="username" id="username" required>
+            <div class="valid-feedback">
+                <span>ok! ( 有效 ) </span>
+            </div>
+            <div class="invalid-feedback">
+                <span>Please provide a User Name.<br>請建立使用者名稱</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="email">Email :</label>
+            <input class="form-control" type="email" name="email" id="email" required>
+            <div class="valid-feedback">
+                <span>ok! ( 有效 ) </span>
+            </div>
+            <div class="invalid-feedback">
+                <span>Please provide an Email.<br>請提供電子信箱</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="password">Password :</label>
+            <input class="form-control" type="password" name="password" id="password" required>
+            <div class="valid-feedback">
+                <span>ok! ( 有效 ) </span>
+            </div>
+            <div class="invalid-feedback">
+                <span>Please provide an Password.<br>請新增密碼</span>
+            </div>
+        </div>
+        <button class="btn btn-info">Register</button>
+    </form>
