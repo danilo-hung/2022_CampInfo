@@ -27,6 +27,7 @@ const seedDB = async () => {
                 title: `${pickRand(descriptors)} ${pickRand(places)}`,
                 location: `${cities[randomC].city}, ${cities[randomC].state}`,
                 image: imgUrl,
+                author: '63874ea77440bb229c194ca6',
                 description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, totam blanditiis, cupiditate quam quaerat magni laboriosam sed accusamus error natus eligendi iusto a ipsa! Deserunt sit ab praesentium ratione illum.',
                 price,
                 //above line = price : price

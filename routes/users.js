@@ -15,7 +15,7 @@ router.post("/register", catchAsync(async (req, res, next) => {
         const registerUser = await User.register(user, password);
         req.login(registerUser, err => {
             if (err) return next(e)
-            req.flash("success", `Hello ${username}. Welcome to Yelp Camp!!`);
+            req.flash("success", `Hello ${username}. Welcome to Yelp Camp!! (已註冊成功!)`);
             res.redirect("/campgrounds");
         })
     } catch (e) {
@@ -25,12 +25,12 @@ router.post("/register", catchAsync(async (req, res, next) => {
 }))
 
 router.get("/login", (req, res) => {
-    res.render("users/login")
+    res.render("users/login");
 })
 
 router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login", keepSessionInfo: true }), (req, res) => {
     const { username } = req.body;
-    req.flash("success", `Hi, ${username} welcome back!`);
+    req.flash("success", `Hi, ${username} welcome back! (已登入)`);
     const redirectUrl = req.session.returnTo;
     delete req.session.returnTo;
     if (redirectUrl) {
@@ -42,7 +42,7 @@ router.post("/login", passport.authenticate("local", { failureFlash: true, failu
 router.get("/logout", (req, res, next) => {
     req.logout(function (e) {
         if (e) { return next(e); }
-        req.flash("success", "Logged out, Bye bye");
+        req.flash("success", "Logged out, Bye bye (已登出)");
         res.redirect("/campgrounds")
     })
 })
