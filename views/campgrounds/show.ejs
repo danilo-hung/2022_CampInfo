@@ -1,8 +1,39 @@
 <% layout('./layout/boilerplate.ejs') %>
+<link rel="stylesheet" href="/css/stars.css">
+
+    <div id='map' style='width: 400px; height: 300px;'></div>
+
+
     <div class="row">
         <div class="col-md-6 mb-3">
+            <div id="campgroundCarousel" class="carousel slide" data-bs-ride="true">
+                <% if (campground.images.length > 1) { %> 
+                    <div class="carousel-indicators">
+                        <% campground.images.forEach((img, i) => { %>
+                            <button type="button" data-bs-target="#campgroundCarousel" data-bs-slide-to="<%= i %>" class="<%= i===0?"active":"" %>" aria-current="<%= i===0?"true":"" %>" aria-label="Slide <%= i+1 %>"></button>
+                        <% }) %> 
+                    </div>
+                <% } %> 
+                <div class="carousel-inner">
+                    <% campground.images.forEach((img, i) => { %>
+                        <div class="carousel-item <%= i===0?"active":"" %>">
+                             <img src="<%=img.url%> " class="d-block w-100" alt="<%=img.filename%>">
+                        </div>
+                    <% }) %> 
+                </div>
+                <% if (campground.images.length > 1) { %> 
+                    <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                <% } %> 
+              </div>
+
             <div class="card">
-                <img src="<%= campground.image %>" class="card-img-top" alt="campground-image">
                 <div class="card-body">
                     <h5 class="card-title">
                         <%= campground.title %>
@@ -48,7 +79,7 @@
                             <span class="text-muted">&ensp;<%= review.rating %></span>
                         </p>
                         <p class="card-text"><%= review.body %>  </p>
-                        <p class="text-muted text-end">-by <%= review.author.username %></p>
+                        <p class="text-muted text-start">-by <%= review.author.username %></p>
                         <% if (currentUser && review.author.equals(currentUser._id)) { %> 
                             <form action="/campgrounds/<%= campground._id %>/reviews/<%=review._id%>?_method=DELETE" method="POST">
                                 <button class="btn btn-sm btn-danger">Delete</button>
@@ -60,14 +91,24 @@
             <% if (currentUser) { %> 
             <h2>Leave your review : </h2>
             <!-- add client side validation -->
-            <form action="/campgrounds/<%=campground._id%>/reviews" method="post" novalidate
-                class="mb-3 validated-form">
-                <div class="mb-3">
-                    <label class="form-label" for="rating">Rating</label>
-                    <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating" required>
+            <form action="/campgrounds/<%=campground._id%>/reviews" method="post" novalidate class="mb-3 validated-form">
+                <div class="">
+                    <div class="starability-grow">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                    </div>                
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="body">Review</label>
+                    <label class="form-label" for="body">Review : </label>
                     <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
                     <div class="valid-feedback">
                         <span>ok! ( 有效 ) </span>
@@ -85,3 +126,15 @@
             <% } %> 
         </div>
     </div>
+
+
+    <script>
+    mapboxgl.accessToken = '<%-process.env.MAPBOX_TOKEN%>' ;
+    const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/streets-v12', // style URL
+    center: [-74.5, 40], // starting position [lng, lat]
+    zoom: 9 // starting zoom
+    });
+    </script>

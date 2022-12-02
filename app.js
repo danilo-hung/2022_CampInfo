@@ -1,28 +1,22 @@
-//set express
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const port = 3000;
 const path = require('path');
-//set mongoose
 const mongoose = require('mongoose');
-//fake POST request
 const methodOverride = require('method-override');
-//import ExpressError
 const ExpressError = require("./utils/ExpressError");
-//import campgrounds router
 const campgroundsRouter = require("./routes/campgrounds");
-//import reviews router
 const reviewsRouter = require("./routes/reviews");
 const userRouter = require("./routes/users")
-//import session
 const session = require("express-session");
-//import flash for flash msg
 const flash = require("connect-flash");
-//import passport package for authentication
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user")
-
 //connect Mongoose
 mongoose.connect('mongodb://localhost:27017/yelp-camp')
     .then(() => {
@@ -32,16 +26,13 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp')
         console.log('Mongoose connect ot MongoDB : ERROR');
         console.log(e)
     })
-//import ejs-mate
 const ejsMate = require('ejs-mate');
 app.engine('ejs', ejsMate)
-//set ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 //set style css js (Bootstrap)
 //path.join('__dirname','public') = (__dirname + '/public')
 app.use(express.static(path.join(__dirname, 'public')));
-//parse post infomation
 app.use(express.urlencoded({ extended: true }))
 //use fake POST request
 app.use(methodOverride('_method'));
@@ -75,12 +66,9 @@ app.use((req, res, next) => {
     next();
 })
 
-//use campgrounds Route
 app.use("/campgrounds", campgroundsRouter);
-//use reviews Route
 app.use("/campgrounds/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
-//HomePage
 app.get('/', (req, res) => {
     res.render('home.ejs')
 })
@@ -88,7 +76,7 @@ app.get('/', (req, res) => {
 //ERRORS HANDLING
 //404 not found
 //app.all = for any HTTP verb, * = for any route
-app.all("*", (req, res, next) => {
+app.all('*', (req, res, next) => {
     next(new ExpressError('PAGE NOT FOUND', 404))
 })
 //ERRORS HANDLING MIDDLEWARE

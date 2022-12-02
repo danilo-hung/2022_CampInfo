@@ -2,7 +2,7 @@
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="POST" novalidate class="validated-form">
+            <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">campground name : </label>
                     <input class="form-control" type="text" name="campground[title]" id="title" required>
@@ -24,17 +24,6 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="image">Image Url</label>
-                    <input class="form-control" type="text" name="campground[image]" id="image" required>
-                    <div class="valid-feedback">
-                        <span>ok! ( 有效 ) </span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span>Please provide a valid image URL.<br>請輸入照片連結</span>
-                    </div>
-                </div>
-
-                <div class="mb-3">
                     <label class="form-label" for="price">Campground Price</label>
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">$</span>
@@ -51,8 +40,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" name="campground[description]" id="description"
+                    <label  class="form-label" for="description">Description</label>
+                    <textarea style="resize:none; min-height:200px" class="form-control " type="text" name="campground[description]" id="description"
                         required></textarea>
                     <div class="valid-feedback">
                         <span>ok! ( 有效 ) </span>
@@ -60,6 +49,13 @@
                     <div class="invalid-feedback">
                         <span>Please provide description.<br>請輸入營地介紹</span>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Add Images: </label>
+                    <div>
+                        <input class="form-control" type="file" name="image" id="image" multiple>
+                    </div>  
+                    <div id="file-upload-filename"></div>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Add Campground</button>

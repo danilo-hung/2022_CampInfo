@@ -1,50 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
+const users = require("../controllers/users")
 const passport = require("passport");
 const catchAsync = require("../utils/catchAsync")
 
-router.get("/register", (req, res) => {
-    res.render("users/register");
-})
+router.route("/register")
+    .get(users.renderRegisterForm)
+    .post(catchAsync(users.createNewUser))
 
-router.post("/register", catchAsync(async (req, res, next) => {
-    try {
-        const { username, password, email } = req.body;
-        const user = new User({ email, username });
-        const registerUser = await User.register(user, password);
-        req.login(registerUser, err => {
-            if (err) return next(e)
-            req.flash("success", `Hello ${username}. Welcome to Yelp Camp!! (已註冊成功!)`);
-            res.redirect("/campgrounds");
-        })
-    } catch (e) {
-        req.flash("alert", e.message)
-        res.redirect("/register")
-    }
-}))
+router.route("/login")
+    .get(users.renderLoginForm)
+    .post(passport.authenticate("local", { failureFlash: true, failureRedirect: "/login", keepSessionInfo: true }), users.login)
 
-router.get("/login", (req, res) => {
-    res.render("users/login");
-})
-
-router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login", keepSessionInfo: true }), (req, res) => {
-    const { username } = req.body;
-    req.flash("success", `Hi, ${username} welcome back! (已登入)`);
-    const redirectUrl = req.session.returnTo;
-    delete req.session.returnTo;
-    if (redirectUrl) {
-        return res.redirect(redirectUrl)
-    }
-    res.redirect("/campgrounds")
-})
-
-router.get("/logout", (req, res, next) => {
-    req.logout(function (e) {
-        if (e) { return next(e); }
-        req.flash("success", "Logged out, Bye bye (已登出)");
-        res.redirect("/campgrounds")
-    })
-})
+router.get("/logout", users.logout)
 
 module.exports = router;

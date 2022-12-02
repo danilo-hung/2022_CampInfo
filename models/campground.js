@@ -3,26 +3,25 @@ const Review = require("./review");
 const Schema = mongoose.Schema;
 
 const campgroundSchema = new Schema({
-    title: {
-        type: String,
-        require: false
+    title: String,
+    images: [{
+        url: String,
+        filename: String
+    }],
+    geometry: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            require: true
+        }
     },
-    image: {
-        type: String
-    },
-    price: {
-        type: Number,
-        require: false,
-        min: 0
-    },
-    description: {
-        type: String,
-        require: false
-    },
-    location: {
-        type: String,
-        require: false
-    },
+    price: Number,
+    description: String,
+    location: String,
     author: {
         type: Schema.Types.ObjectId,
         ref: "User"
