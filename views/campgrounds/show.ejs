@@ -1,9 +1,6 @@
 <% layout('./layout/boilerplate.ejs') %>
 <link rel="stylesheet" href="/css/stars.css">
 
-    <div id='map' style='width: 400px; height: 300px;'></div>
-
-
     <div class="row">
         <div class="col-md-6 mb-3">
             <div id="campgroundCarousel" class="carousel slide" data-bs-ride="true">
@@ -17,7 +14,7 @@
                 <div class="carousel-inner">
                     <% campground.images.forEach((img, i) => { %>
                         <div class="carousel-item <%= i===0?"active":"" %>">
-                             <img src="<%=img.url%> " class="d-block w-100" alt="<%=img.filename%>">
+                             <img src="<%=img.crop%> " class="d-block w-100" alt="<%=img.filename%>">
                         </div>
                     <% }) %> 
                 </div>
@@ -46,7 +43,11 @@
                     <li class="list-group-item text-muted">
                         <%= campground.location %>
                     </li>
+                    <li class="list-group-item text-muted">
+                        Address : <%= campground.address %>
+                    </li>
                     <li class="list-group-item">$ <%= campground.price %> / per night</li>
+                    <li id='map' class="list-group-item"></li>
                 </ul>
             <% if (currentUser && campground.author.equals(currentUser._id)) { %> 
                 <div class="card-body">
@@ -62,79 +63,81 @@
             </div>
         </div>
         <div class="col-md-6">
-            <% for(let review of campground.reviews){ %>
+
+            <% if (currentUser) { %> 
+                <p class="fs-4 fw-bolder">Leave your review </p>
+                <!-- add client side validation -->
+                <form action="/campgrounds/<%=campground._id%>/reviews" method="post" novalidate class="mb-3 validated-form">
+                    <div class="">
+                        <div class="starability-grow">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                        </div>                
+                    </div>
+                    <div class="mb-2">
+                        <textarea placeholder="write somthing..." class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                        <div class="valid-feedback">
+                            <span>ok! ( 有效 ) </span>
+                        </div>
+                        <div class="invalid-feedback">
+                            <span>Please type your review. <br>(請評論)</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-info">Submit</button>
+                </form>
+                <% } else{ %> 
+                    <div>
+                        <a href="/login" class="btn btn-outline-info mb-2">Login to send a review</a>
+                    </div>
+                <% } %> 
+
+            <% for(let j=campground.reviews.length-1; j>=0;j--){ %>
                 <div class="card mb-3">
                     <div class="card-body">
                         <p class="card-text">
-                            <% for (let i=0; i<review.rating; i++){ %> 
+                            <% for (let i=0; i<campground.reviews[j].rating; i++){ %> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  fill="rgb(255, 230, 0)" class="bi bi-star-fill mb-1" viewBox="0 0 16 16">
                                     <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                 </svg>
                                 <% } %> 
-                                <% for (let i=0; i< (5-review.rating); i++){ %> 
+                                <% for (let i=0; i< (5-campground.reviews[j].rating); i++){ %> 
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  fill="rgb(255, 230, 0)" class="bi bi-star-fill mb-1" viewBox="0 0 16 16">
                                         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                                     </svg>
                                 <% } %> 
-                            <span class="text-muted">&ensp;<%= review.rating %></span>
+                            <span class="text-muted">&ensp;<%= campground.reviews[j].rating %></span>
                         </p>
-                        <p class="card-text"><%= review.body %>  </p>
-                        <p class="text-muted text-start">-by <%= review.author.username %></p>
-                        <% if (currentUser && review.author.equals(currentUser._id)) { %> 
-                            <form action="/campgrounds/<%= campground._id %>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+                        <p class="card-text"><%= campground.reviews[j].body %>  </p>
+                        <p class="text-muted text-start">-by <%= campground.reviews[j].author.username %></p>
+                        <% if (currentUser && campground.reviews[j].author.equals(currentUser._id)) { %> 
+                            <form action="/campgrounds/<%= campground._id %>/reviews/<%=campground.reviews[j]._id%>?_method=DELETE" method="POST">
                                 <button class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         <% } %> 
                     </div>
                 </div>
             <% } %>
-            <% if (currentUser) { %> 
-            <h2>Leave your review : </h2>
-            <!-- add client side validation -->
-            <form action="/campgrounds/<%=campground._id%>/reviews" method="post" novalidate class="mb-3 validated-form">
-                <div class="">
-                    <div class="starability-grow">
-                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
-                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                        <label for="first-rate1" title="Terrible">1 star</label>
-                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                        <label for="first-rate2" title="Not good">2 stars</label>
-                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                        <label for="first-rate3" title="Average">3 stars</label>
-                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                        <label for="first-rate4" title="Very good">4 stars</label>
-                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                        <label for="first-rate5" title="Amazing">5 stars</label>
-                    </div>                
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="body">Review : </label>
-                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-                    <div class="valid-feedback">
-                        <span>ok! ( 有效 ) </span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span>Please type your review. <br>(請評論)</span>
-                    </div>
-                </div>
-                <button class="btn btn-info">Submit</button>
-            </form>
-            <% } else{ %> 
-                <div>
-                    <a href="/login" class="btn btn-outline-info">Login to send a review</a>
-                </div>
-            <% } %> 
+            
         </div>
     </div>
-
-
+    
     <script>
-    mapboxgl.accessToken = '<%-process.env.MAPBOX_TOKEN%>' ;
-    const map = new mapboxgl.Map({
-    container: 'map', // container ID
-    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-    style: 'mapbox://styles/mapbox/streets-v12', // style URL
-    center: [-74.5, 40], // starting position [lng, lat]
-    zoom: 9 // starting zoom
-    });
+        const mapToken = "<%-process.env.MAPBOX_TOKEN%>"
+        const campground = <%-JSON.stringify(campground)%>
     </script>
+    <script src="/js/showPageMap.js"></script>
+
+
+
+
+    
+    

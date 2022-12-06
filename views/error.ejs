@@ -8,8 +8,10 @@
                     <div class="my-4 border-bottom border-dark border-5"></div>
                     <h4 class="text-center mt-5" style="font-size:3em"><%= err.message  %> </h4>
                     <hr class="mt-5">
+                    <% if(process.env.NODE_ENV !== 'production'){ %> 
                     <p class="text-muted">DETAIL INFORMATION : <br> <%= err.stack  %> </p>
                     <hr>
+                    <% } %> 
                     <a href="/campgrounds" class="mb-0"> Back to Campgrounds page</a>
                 </div>
             </div>

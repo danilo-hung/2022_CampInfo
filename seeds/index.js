@@ -2,9 +2,17 @@
 const mongoose = require('mongoose');
 //import comgroundSchema
 const Campground = require("../models/campground");
-const { cities } = require("./cities")
-const { places, descriptors } = require("./fakePlaces")
-mongoose.connect('mongodb://localhost:27017/yelp-camp')
+const { twCities } = require("./taiwanCities")
+const { places, descriptors } = require("./fakePlaces");
+
+const User = require("../models/user");
+
+
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding")
+const geocoder = mbxGeocoding({ accessToken: "pk.eyJ1IjoiZGFuaWxvLTk5IiwiYSI6ImNra3dmcWlqczAwNjQyd2tjbnltOGhrdzMifQ.g8eeztwQbZSYXCWbbUqU3w" });
+// const dbUrl = process.env.DB_URL
+const dbUrl = 'mongodb://localhost:27017/yelp-camp'
+mongoose.connect(dbUrl)
     .then(() => {
         console.log('Mongoose connect to MongoDB : SUCCESS')
     })
@@ -13,34 +21,70 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp')
         console.log(e)
     })
 
+const seedUser = async () => {
+    try {
+        await User.deleteMany({});
+        const username = 'danilo';
+        const password = 'danilo';
+        const email = 'danilo@gmail.com'
+        const user = new User({ email, username });
+        await User.register(user, password);
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
 const pickRand = (subject) => { return subject[Math.floor(Math.random() * subject.length)] };
 const seedDB = async () => {
     try {
+
+        await seedUser();
+        const adminUser = await User.findOne({ username: 'danilo' });
+
         await Campground.deleteMany({});
-        for (let i = 0; i < 100; i++) {
-            const randomC = Math.floor(Math.random() * cities.length);
+        for (let i = 0; i < 300; i++) {
+            const randomC = Math.floor(Math.random() * twCities.length);
             //set random price between 30.00~39.99
             const price = Math.round((Math.random() * 30 + 10) * 100) / 100;
-            //get random photo from a collection on unsplash web
-            const imgUrl = 'https://images.unsplash.com/photo-1573347885404-729f489816ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80';
+            const city = twCities[randomC].city;
+            const country = twCities[randomC].country;
+            const NP =[1, -1];
+            const NP1 = NP[Math.floor(Math.random() * 2)];
+            const NP2 = NP[Math.floor(Math.random() * 2)]
+            // const geoData = await geocoder.forwardGeocode({
+            //     query: `${city}, ${country}`,
+            //     limit: 1
+            // }).send()
+            // const geo = geoData.body.features[0].geometry;
+
             const c = new Campground({
                 title: `${pickRand(descriptors)} ${pickRand(places)}`,
-                location: `${cities[randomC].city}, ${cities[randomC].state}`,
-                author: '63874ea77440bb229c194ca6',
+                location: `${city}, ${country}`,
+                author: adminUser._id,
                 description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, totam blanditiis, cupiditate quam quaerat magni laboriosam sed accusamus error natus eligendi iusto a ipsa! Deserunt sit ab praesentium ratione illum.',
                 price,
+                address: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
+                geometry: {
+                    type:"Point",
+                    coordinates:[
+                        String(Number(twCities[randomC].lng) + NP1 * (Math.floor(Math.random()*1250)/100000)),
+                        String(Number(twCities[randomC].lat) + NP2 * (Math.floor(Math.random()*1250)/100000))
+
+                    ]
+                },
                 images: [
                     {
-                        url: 'https://res.cloudinary.com/dg9is6ac7/image/upload/v1669916292/2022YelpCamp/iimdvcaspw5dkstboynv.jpg',
-                        filename: '2022YelpCamp/iimdvcaspw5dkstboynv',
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995158/2022YelpCamp/xthxbyd7tg396lojb4co.jpg",
+                        filename: "filename1"
                     },
                     {
-                        url: 'https://res.cloudinary.com/dg9is6ac7/image/upload/v1669916291/2022YelpCamp/z0rcgsubxr7h3ldqc59v.jpg',
-                        filename: '2022YelpCamp/z0rcgsubxr7h3ldqc59v',
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995117/2022YelpCamp/fhpx1trwtrbvlfcuwha5.jpg",
+                        filename: "filename2"
                     },
                     {
-                        url: 'https://res.cloudinary.com/dg9is6ac7/image/upload/v1669916292/2022YelpCamp/kvgemarvruvs0rfy996h.jpg',
-                        filename: '2022YelpCamp/kvgemarvruvs0rfy996h',
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995117/2022YelpCamp/xnf8ouslrspqnx0pqbfe.jpg",
+                        filename: "filename3"
                     }
                 ]
                 //above line = price : price
@@ -54,6 +98,7 @@ const seedDB = async () => {
 }
 
 //exit this app after it runned
-seedDB().then(() => {
+seedDB()
+.then(() => {
     mongoose.connection.close()
 })

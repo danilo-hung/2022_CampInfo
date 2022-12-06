@@ -1,70 +1,88 @@
 <% layout('./layout/boilerplate.ejs') %>
     <div class="row">
-        <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label class="form-label" for="title">campground name : </label>
-                    <input class="form-control" type="text" name="campground[title]" id="title" required>
-                    <div class="valid-feedback">
-                        <span>ok! ( 有效 ) </span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span>Please type the campground name.<br>請輸入宿營地名稱</span>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="location">city : </label>
-                    <input class="form-control" type="text" name="campground[location]" id="location" required>
-                    <div class="valid-feedback">
-                        <span>ok! ( 有效 ) </span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span>Please provide a valid city.<br>請輸入有效的城市名稱</span>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="price">Campground Price</label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="price-label">$</span>
-                        <input type="text" id="price" class="form-control" placeholder="0.00" name="campground[price]"
-                            aria-describedby="price-label" required>
-                        <div class="valid-feedback">
-                            <span>ok! ( 有效 ) </span>
+            <div class="card shadow mb-5">
+                <div class="card-body">
+                    <h1>New Campground</h1>
+                    <form action="/campgrounds" method="POST" novalidate class="validated-form"
+                        enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label" for="title">Campground Name : </label>
+                            <input class="form-control" type="text" name="campground[title]" id="title"
+                                placeholder="Campground Name" required>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please type the campground name.<br>請輸入宿營地名稱</span>
+                            </div>
                         </div>
-                        <div class="invalid-feedback">
-                            <span>Please select a valid price. <br> 請輸入有效的價格</span>
+                        <div class="mb-3">
+                            <label class="form-label" for="location">City and Country/State : </label>
+                            <input class="form-control" type="text" name="campground[location]" id="location"
+                                placeholder="ex: Paris, France" required>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please provide a valid city and Country/State.<br>請輸入城市名稱</span>
+                            </div>
                         </div>
-                    </div>
-
-                </div>
-
-                <div class="mb-3">
-                    <label  class="form-label" for="description">Description</label>
-                    <textarea style="resize:none; min-height:200px" class="form-control " type="text" name="campground[description]" id="description"
-                        required></textarea>
-                    <div class="valid-feedback">
-                        <span>ok! ( 有效 ) </span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span>Please provide description.<br>請輸入營地介紹</span>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Add Images: </label>
+                        <div class="mb-3">
+                            <label class="form-label" for="address">address : </label>
+                            <input class="form-control" type="text" name="campground[address]" id="address"
+                                placeholder="ex: P400 Broad St, Seattle, USA" required>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please provide an address.<br>請輸入地址</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="price">Campground Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="price-label">$</span>
+                                <input type="text" id="price" class="form-control" placeholder="0.00"
+                                    name="campground[price]" aria-describedby="price-label" required>
+                                <div class="valid-feedback">
+                                    <span>ok! ( 有效 ) </span>
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span>Please select a valid price. <br> 請輸入有效的價格</span>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="mb-3">
+                            <label class="form-label" for="description">Description</label>
+                            <textarea style="resize:none; min-height:200px" class="form-control " type="text"
+                                name="campground[description]" id="description" required></textarea>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please provide description.<br>請輸入營地介紹</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Add Images: </label>
+                            <div>
+                                <input class="form-control" type="file" name="image" id="image" multiple>
+                            </div>
+                            <div id="file-upload-filename"></div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-info">Add Campground</button>
+                        </div>
+                    </form>
                     <div>
-                        <input class="form-control" type="file" name="image" id="image" multiple>
-                    </div>  
-                    <div id="file-upload-filename"></div>
+                        <a class="btn btn-outline-danger" href="/campgrounds">Back to All Campgrounds</a>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <button class="btn btn-info">Add Campground</button>
-                </div>
-            </form>
-            <footer>
-                <a href="/campgrounds">All Campgrounds</a>
-            </footer>
+            </div>
         </div>
     </div>
 
-    
+    <script src="/js/imageUpload.js"></script>

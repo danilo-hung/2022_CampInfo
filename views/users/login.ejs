@@ -1,26 +1,43 @@
 <% layout('./layout/boilerplate.ejs') %>
-    <h1>Login</h1>
-    <form action="/login" method="POST" class="validated-form" novalidate>
-        <div class="mb-3">
-            <label class="form-label" for="username">Username :</label>
-            <input class="form-control" type="text" name="username" id="username" required>
-            <div class="valid-feedback">
-                <span>ok! ( 有效 ) </span>
-            </div>
-            <div class="invalid-feedback">
-                <span>Please provide your User Name.<br>請輸入使用者名稱</span>
-            </div>
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="password">Password :</label>
-            <input class="form-control" type="password" name="password" id="password" required>
-            <div class="valid-feedback">
-                <span>ok! ( 有效 ) </span>
-            </div>
-            <div class="invalid-feedback">
-                <span>Please provide your Password.<br>請輸入密碼</span>
+<div class="container d-flex justify-content-center align-items-center mb-5" >
+    <div class="row">
+        <div class="" style="width: 100%;">
+            <div class="card shadow">
+                <img src="https://media.istockphoto.com/id/1138169629/photo/wild-camping.jpg?s=612x612&w=0&k=20&c=oysDJqBq0AR0cJmmMOGDtxVyW1xvbJs6OTT7YyzCDKk="
+                    alt="" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Login</h5>
+                    <form action="/login" method="POST" class="validated-form" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="username">Username :</label>
+                            <input class="form-control" type="text" name="username" id="username" required autofocus>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please provide your User Name.<br>請輸入使用者名稱</span>
+                            </div>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label class="form-label" for="password">Password :</label>
+                            <input class="form-control" type="password" name="password" id="password" required>
+                            <div class="valid-feedback">
+                                <span>ok! ( 有效 ) </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span>Please provide your Password.<br>請輸入密碼</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mb-3" style="width:100% ">Login</button>
+                        <a href="/register" class="btn btn-outline-warning" style="width:100% ">(Don't have a account yet?) <br> <b class="fs-4">Register</b></a>
+                    </form>
+                </div>
+                
             </div>
         </div>
-        <button class="btn btn-info">Login</button>
-    </form>
+    </div>
+
+</div>
+
