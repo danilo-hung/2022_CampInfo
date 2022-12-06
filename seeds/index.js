@@ -8,10 +8,10 @@ const { places, descriptors } = require("./fakePlaces");
 const User = require("../models/user");
 
 
-const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding")
-const geocoder = mbxGeocoding({ accessToken: "pk.eyJ1IjoiZGFuaWxvLTk5IiwiYSI6ImNra3dmcWlqczAwNjQyd2tjbnltOGhrdzMifQ.g8eeztwQbZSYXCWbbUqU3w" });
-// const dbUrl = process.env.DB_URL
-const dbUrl = 'mongodb://localhost:27017/yelp-camp'
+// const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding")
+// const geocoder = mbxGeocoding({ accessToken: "pk.eyJ1IjoiZGFuaWxvLTk5IiwiYSI6ImNra3dmcWlqczAwNjQyd2tjbnltOGhrdzMifQ.g8eeztwQbZSYXCWbbUqU3w" });
+const dbUrl = process.env.DB_URL
+// const dbUrl = 'mongodb://localhost:27017/yelp-camp'
 mongoose.connect(dbUrl)
     .then(() => {
         console.log('Mongoose connect to MongoDB : SUCCESS')
@@ -43,7 +43,7 @@ const seedDB = async () => {
         const adminUser = await User.findOne({ username: 'danilo' });
 
         await Campground.deleteMany({});
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i < 150; i++) {
             const randomC = Math.floor(Math.random() * twCities.length);
             //set random price between 30.00~39.99
             const price = Math.round((Math.random() * 30 + 10) * 100) / 100;
@@ -75,15 +75,15 @@ const seedDB = async () => {
                 },
                 images: [
                     {
-                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995158/2022YelpCamp/xthxbyd7tg396lojb4co.jpg",
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/c_fill,h_600,w_900/v1669995158/2022YelpCamp/xthxbyd7tg396lojb4co.jpg",
                         filename: "filename1"
                     },
                     {
-                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995117/2022YelpCamp/fhpx1trwtrbvlfcuwha5.jpg",
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/c_fill,h_600,w_900/v1669995117/2022YelpCamp/fhpx1trwtrbvlfcuwha5.jpg",
                         filename: "filename2"
                     },
                     {
-                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/v1669995117/2022YelpCamp/xnf8ouslrspqnx0pqbfe.jpg",
+                        url: "https://res.cloudinary.com/dg9is6ac7/image/upload/c_fill,h_600,w_900/v1669995117/2022YelpCamp/xnf8ouslrspqnx0pqbfe.jpg",
                         filename: "filename3"
                     }
                 ]

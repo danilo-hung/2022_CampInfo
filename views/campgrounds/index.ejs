@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <% if (campground.images && campground.images.length > 0){ %> 
-                            <img class="img-fluid" src="<%= campground.images[0].url %>" alt="">
+                            <img class="img-fluid" src="<%= campground.images[0].crop %>" alt="">
                         <% } else{ %>
                             <img class="img-fluid" src="https://res.cloudinary.com/dg9is6ac7/image/upload/v1670225208/Screenshot_2022-12-05_152247-01_kjxy0p.jpg" alt="">
                         <% } %> 
